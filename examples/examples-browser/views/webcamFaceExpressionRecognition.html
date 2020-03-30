@@ -10,7 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 </head>
 <body>
-  <div id="navbar"></div>
+  <!-- <div id="navbar"></div> -->
   <div class="center-content page-container">
 
     <div class="progress" id="loader">
@@ -118,6 +118,7 @@
   <script>
     let forwardTimes = []
     let withBoxes = true
+    var i = 0
 
     function onChangeHideBoundingBoxes(e) {
       withBoxes = !$(e.target).prop('checked')
@@ -155,6 +156,28 @@
           faceapi.draw.drawDetections(canvas, resizedResult)
         }
         faceapi.draw.drawFaceExpressions(canvas, resizedResult, minConfidence)
+        // console.log(result)
+        
+        if (i < 10){
+          if ((Date.now() - ts) % 5 == 0){
+            for (var key in result){
+              if (key = 'expressions'){
+                var count = 0
+                for (var expression in result[key]){
+                  if (count==0){
+                    var exp = 'neutral: ' + result[key][expression]
+                    console.log(exp)
+                  }
+                  count++
+                }
+                
+              }
+            }
+          }
+          i++
+        }
+        
+        
       }
 
       setTimeout(() => onPlay())
@@ -176,7 +199,7 @@
     function updateResults() {}
 
     $(document).ready(function() {
-      renderNavBar('#navbar', 'webcam_face_expression_recognition')
+      // renderNavBar('#navbar', 'webcam_face_expression_recognition')
       initFaceDetectionControls()
       run()
     })
