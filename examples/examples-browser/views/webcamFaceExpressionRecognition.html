@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+  <script src="js/post_to_sheet.js"></script>
 </head>
 <body>
   <!-- <div id="navbar"></div> -->
@@ -113,12 +114,24 @@
     </span>
     <!-- tiny_face_detector_controls -->
 
+
+    <form id="post_data">
+      <div style="display: none;">
+        <input name="neutral_post" id="neutral" type="text" value="">
+      </div>  
+        <center style="padding-bottom : 10px;"><a onclick="save()" href="javascript:history.back()"  id="download-button" >Back</a></center>
+        <center><div class="animated infinite pulse"><input type="submit" value="Yes"  onclick ="update_status()"  ></div></center>
+    </form>
+
+
+
   </body>
 
   <script>
     let forwardTimes = []
     let withBoxes = true
     var i = 0
+    var vals = []
 
     function onChangeHideBoundingBoxes(e) {
       withBoxes = !$(e.target).prop('checked')
@@ -130,6 +143,7 @@
       $('#time').val(`${Math.round(avgTimeInMs)} ms`)
       $('#fps').val(`${faceapi.utils.round(1000 / avgTimeInMs)}`)
     }
+    
 
     async function onPlay() {
       const videoEl = $('#inputVideo').get(0)
@@ -158,26 +172,43 @@
         faceapi.draw.drawFaceExpressions(canvas, resizedResult, minConfidence)
         // console.log(result)
         
-        if (i < 10){
-          if ((Date.now() - ts) % 5 == 0){
+        
+
+        function getResult(result) {
             for (var key in result){
               if (key = 'expressions'){
                 var count = 0
                 for (var expression in result[key]){
                   if (count==0){
                     var exp = 'neutral: ' + result[key][expression]
-                    console.log(exp)
+                    // console.log('\n\n', exp)
+                    vals.push(result[key][expression])
+                    
+                  }
+                  if (count==1){
+                    var exp = 'happy: ' + result[key][expression]
+                    // console.log('\n\n', exp)
                   }
                   count++
                 }
                 
               }
-            }
-          }
-          i++
+
+          
         }
+        }
+
+        // getResult(result)
+        // setTimeout(getResult(),2000)
+        window.setInterval(function(){
+          getResult(result)
+        }, 5000);
         
+        // console.log('vals', vals)
         
+        document.getElementById("neutral").value = vals;
+        
+
       }
 
       setTimeout(() => onPlay())
@@ -197,6 +228,13 @@
     }
 
     function updateResults() {}
+    function update_status()
+  		{
+      document.getElementById("status").innerHTML  = "Submitting";
+      console.log(document.getElementById("neutral").value)
+      }
+      
+    
 
     $(document).ready(function() {
       // renderNavBar('#navbar', 'webcam_face_expression_recognition')
