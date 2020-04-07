@@ -1,26 +1,26 @@
-async function requestExternalImage(imageUrl) {
-  const res = await fetch('fetch_external_image', {
-    method: 'post',
-    headers: {
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({ imageUrl })
-  })
-  if (!(res.status < 400)) {
-    console.error(res.status + ' : ' + await res.text())
-    throw new Error('failed to fetch image from url: ' + imageUrl)
-  }
+// async function requestExternalImage(imageUrl) {
+//   const res = await fetch('fetch_external_image', {
+//     method: 'post',
+//     headers: {
+//       'content-type': 'application/json'
+//     },
+//     body: JSON.stringify({ imageUrl })
+//   })
+//   if (!(res.status < 400)) {
+//     console.error(res.status + ' : ' + await res.text())
+//     throw new Error('failed to fetch image from url: ' + imageUrl)
+//   }
 
-  let blob
-  try {
-    blob = await res.blob()
-    return await faceapi.bufferToImage(blob)
-  } catch (e) {
-    console.error('received blob:', blob)
-    console.error('error:', e)
-    throw new Error('failed to load image from url: ' + imageUrl)
-  }
-}
+//   let blob
+//   try {
+//     blob = await res.blob()
+//     return await faceapi.bufferToImage(blob)
+//   } catch (e) {
+//     console.error('received blob:', blob)
+//     console.error('error:', e)
+//     throw new Error('failed to load image from url: ' + imageUrl)
+//   }
+// }
 
 function renderNavBar(navbarId, exampleUri) {
   const examples = [
@@ -64,6 +64,10 @@ function renderNavBar(navbarId, exampleUri) {
       uri: 'webcam_face_expression_recognition',
       name: 'Webcam Face Expression Recognition'
     },
+    {
+      uri: 'chart',
+      name: 'Chart'
+    },
     // {
     //   uri: 'webcam_age_and_gender_recognition',
     //   name: 'Webcam Age and Gender Recognition'
@@ -106,28 +110,28 @@ function renderNavBar(navbarId, exampleUri) {
   menuContent.classList.add('side-nav', 'fixed')
   navbar.appendChild(menuContent)
 
-  const menuButton = document.createElement('a')
-  menuButton.href='#'
-  menuButton.classList.add('button-collapse', 'show-on-large')
-  menuButton.setAttribute('data-activates', 'slide-out')
-  const menuButtonIcon = document.createElement('img')
-  menuButtonIcon.src = 'menu_icon.png'
-  menuButton.appendChild(menuButtonIcon)
-  navbar.appendChild(menuButton)
+  // const menuButton = document.createElement('a')
+  // menuButton.href='#'
+  // menuButton.classList.add('button-collapse', 'show-on-large')
+  // menuButton.setAttribute('data-activates', 'slide-out')
+  // const menuButtonIcon = document.createElement('img')
+  // menuButtonIcon.src = 'menu_icon.png'
+  // menuButton.appendChild(menuButtonIcon)
+  // navbar.appendChild(menuButton)
 
-  const li = document.createElement('li')
-  const githubLink = document.createElement('a')
-  githubLink.classList.add('waves-effect', 'waves-light', 'side-by-side')
-  githubLink.id = 'github-link'
-  githubLink.href = 'https://github.com/justadudewhohacks/face-api.js'
-  const h5 = document.createElement('h5')
-  h5.innerHTML = 'face-api.js'
-  githubLink.appendChild(h5)
-  const githubLinkIcon = document.createElement('img')
-  githubLinkIcon.src = 'github_link_icon.png'
-  githubLink.appendChild(githubLinkIcon)
-  li.appendChild(githubLink)
-  menuContent.appendChild(li)
+  // const li = document.createElement('li')
+  // const githubLink = document.createElement('a')
+  // githubLink.classList.add('waves-effect', 'waves-light', 'side-by-side')
+  // githubLink.id = 'github-link'
+  // githubLink.href = 'https://github.com/justadudewhohacks/face-api.js'
+  // const h5 = document.createElement('h5')
+  // h5.innerHTML = 'face-api.js'
+  // githubLink.appendChild(h5)
+  // const githubLinkIcon = document.createElement('img')
+  // githubLinkIcon.src = 'github_link_icon.png'
+  // githubLink.appendChild(githubLinkIcon)
+  // li.appendChild(githubLink)
+  // menuContent.appendChild(li)
 
   examples
     .forEach(ex => {

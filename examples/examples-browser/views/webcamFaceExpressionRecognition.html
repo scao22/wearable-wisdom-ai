@@ -9,9 +9,10 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="js/post_to_sheet.js"></script>
+  <script src="js/Chart.js"></script>
 </head>
 <body>
-  <!-- <div id="navbar"></div> -->
+  <div id="navbar"></div>
   <div class="center-content page-container">
 
     <div class="progress" id="loader">
@@ -122,8 +123,9 @@
         <center style="padding-bottom : 10px;"><a onclick="save()" href="javascript:history.back()"  id="download-button" >Back</a></center>
         <center><div class="animated infinite pulse"><input type="submit" value="Yes"  onclick ="update_status()"  ></div></center>
     </form>
-
-
+    <div>
+    <canvas id="myChart" width="400" height="400"></canvas>
+  </div>
 
   </body>
 
@@ -183,6 +185,7 @@
                     var exp = 'neutral: ' + result[key][expression]
                     // console.log('\n\n', exp)
                     vals.push(result[key][expression])
+                    addData(myChart,expression,result[key][expression])
                     
                   }
                   if (count==1){
@@ -237,10 +240,57 @@
     
 
     $(document).ready(function() {
-      // renderNavBar('#navbar', 'webcam_face_expression_recognition')
+      renderNavBar('#navbar', 'webcam_face_expression_recognition')
       initFaceDetectionControls()
       run()
     })
+
+    function addData(chart, label, data) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(data);
+    });
+    chart.update();
+}
+
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: 'expression',
+                data: [],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
   </script>
 </body>
 </html>
