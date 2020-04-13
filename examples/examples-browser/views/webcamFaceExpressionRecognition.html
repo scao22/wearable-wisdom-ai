@@ -12,7 +12,7 @@
   <script src="js/Chart.js"></script>
 </head>
 <body>
-  <div id="navbar"></div>
+  <!-- <div id="navbar"></div> -->
   <div class="center-content page-container">
 
     <div class="progress" id="loader">
@@ -20,101 +20,13 @@
     </div>
     <div style="position: relative" class="margin">
       <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
-      <canvas id="overlay" />
+      <canvas id="overlay" /> 
     </div>
-
-    <div class="row side-by-side">
-
-      <!-- face_detector_selection_control -->
-      <div id="face_detector_selection_control" class="row input-field" style="margin-right: 20px;">
-        <select id="selectFaceDetector">
-          <option value="ssd_mobilenetv1">SSD Mobilenet V1</option>
-          <option value="tiny_face_detector">Tiny Face Detector</option>
-        </select>
-        <label>Select Face Detector</label>
-      </div>
-      <!-- face_detector_selection_control -->
-
-      <!-- check boxes -->
-      <div class="row" style="width: 220px;">
-        <input type="checkbox" id="hideBoundingBoxesCheckbox" onchange="onChangeHideBoundingBoxes(event)" />
-        <label for="hideBoundingBoxesCheckbox">Hide Bounding Boxes</label>
-      </div>
-      <!-- check boxes -->
-
-      <!-- fps_meter -->
-      <div id="fps_meter" class="row side-by-side">
-        <div>
-          <label for="time">Time:</label>
-          <input disabled value="-" id="time" type="text" class="bold">
-          <label for="fps">Estimated Fps:</label>
-          <input disabled value="-" id="fps" type="text" class="bold">
-        </div>
-      </div>
-      <!-- fps_meter -->
-
+    <div>
+      <canvas id="myChart" width="400" height="400"></canvas>
     </div>
-
-
-    <!-- ssd_mobilenetv1_controls -->
-    <span id="ssd_mobilenetv1_controls">
-      <div class="row side-by-side">
-        <div class="row">
-          <label for="minConfidence">Min Confidence:</label>
-          <input disabled value="0.5" id="minConfidence" type="text" class="bold">
-        </div>
-        <button
-          class="waves-effect waves-light btn"
-          onclick="onDecreaseMinConfidence()"
-        >
-          <i class="material-icons left">-</i>
-        </button>
-        <button
-          class="waves-effect waves-light btn"
-          onclick="onIncreaseMinConfidence()"
-        >
-          <i class="material-icons left">+</i>
-        </button>
-      </div>
-    </span>
-    <!-- ssd_mobilenetv1_controls -->
-
-    <!-- tiny_face_detector_controls -->
-    <span id="tiny_face_detector_controls">
-      <div class="row side-by-side">
-        <div class="row input-field" style="margin-right: 20px;">
-          <select id="inputSize">
-            <option value="" disabled selected>Input Size:</option>
-            <option value="128">128 x 128</option>
-            <option value="160">160 x 160</option>
-            <option value="224">224 x 224</option>
-            <option value="320">320 x 320</option>
-            <option value="416">416 x 416</option>
-            <option value="512">512 x 512</option>
-            <option value="608">608 x 608</option>
-          </select>
-          <label>Input Size</label>
-        </div>
-        <div class="row">
-          <label for="scoreThreshold">Score Threshold:</label>
-          <input disabled value="0.5" id="scoreThreshold" type="text" class="bold">
-        </div>
-        <button
-          class="waves-effect waves-light btn"
-          onclick="onDecreaseScoreThreshold()"
-        >
-          <i class="material-icons left">-</i>
-        </button>
-        <button
-          class="waves-effect waves-light btn"
-          onclick="onIncreaseScoreThreshold()"
-        >
-          <i class="material-icons left">+</i>
-        </button>
-      </div>
-    </span>
-    <!-- tiny_face_detector_controls -->
-
+  </div>
+    
 
     <form id="post_data">
       <div style="display: none;">
@@ -122,9 +34,7 @@
       </div>  
         <center><input type="submit" value="Yes"  onclick ="update_status()"></center>
     </form>
-    <div>
-    <canvas id="myChart" width="400" height="400"></canvas>
-  </div>
+    
 
   </body>
 
@@ -133,6 +43,7 @@
     let withBoxes = true
     var i = 0
     var vals = []
+    var neutral = 0
 
     function onChangeHideBoundingBoxes(e) {
       withBoxes = !$(e.target).prop('checked')
@@ -185,12 +96,14 @@
                     // console.log('\n\n', exp)
                     vals.push(result[key][expression])
                     //console.log(expression)
-                    //console.log(result[key][expression])
-                    //addData(myChart,expression,result[key][expression])
-                    
+                    // console.log(result[key][expression])
+                    addData(myChart,expression,result[key][expression],0)
+                    // chart_data_update(myChart, expression, result[key][expression])
+                    // neutral = result[key][expression]
                   }
                   if (count==1){
                     var exp = 'happy: ' + result[key][expression]
+                    addData(myChart,expression,result[key][expression],1)
                     // console.log('\n\n', exp)
                   }
                   count++
@@ -201,12 +114,11 @@
           
         }
         }
-
-        // getResult(result)
+        getResult(result)
         // setTimeout(getResult(),2000)
-        window.setInterval(function(){
-          getResult(result)
-        }, 50);
+        // window.setInterval(function(){
+        //   getResult(result)
+        // }, 50);
         
         // console.log('vals', vals)
         
@@ -217,11 +129,9 @@
 
       setTimeout(() => onPlay())
     }
+    // chart_data_update(myChart, "neutral", neutral)
+    console.log('neutral', neutral)
     
-    function chart_data_update()
-    	{
-    	addData(myChart,expression,result[key][expression])
-    	}
 
     async function run() {
       // load face detection and face expression recognition models
@@ -247,16 +157,35 @@
     
 
     $(document).ready(function() {
-      renderNavBar('#navbar', 'webcam_face_expression_recognition')
+      // renderNavBar('#navbar', 'webcam_face_expression_recognition')
       initFaceDetectionControls()
       run()
     })
 
-    function addData(chart, label, data) {
-    chart.data.labels.push(label);
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data.push(data);
-    });
+    function addData(chart, label, data, index) {
+      var dsets = chart.data.datasets;
+      var l = chart.data.labels;
+      var d = dsets[index].data;
+      // chart.data.labels.push(label);
+      // chart.data.datasets.forEach((dataset) => {
+      //     dataset.data.push(data);
+      // });
+      var dLength = d.length;
+      console.log('l',l)
+      console.log('label', label)
+      var didRemoveData = false
+      if (dLength > 10) {
+      d.shift();
+      didRemoveData = true;
+    }
+
+    // if either download or upload data was removed, we also need to remove
+    // the first label to keep the data from squeezing in.
+    if (didRemoveData) {
+      l.shift();
+    }
+    // l.push(label);
+    d.push(data);
     chart.update();
 }
 
@@ -264,37 +193,34 @@
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            labels: [],
             datasets: [{
-                label: 'expression',
+                label: 'neutral',
                 data: [],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
+                pointRadius: 1,
+                fill: false
+            },
+            {
+                label: 'happy',
+                data: [],
+                pointRadius: 1,
+                fill: false,
+                borderColor: 'rgba(245, 215, 110, 1)',
+                backgroundColor: 'rgba(245, 215, 110, 1)'
             }]
         },
         options: {
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        suggestedMax: 1.0,
+                        suggestedMin: 0,
+                        stepSize: .1
                     }
                 }]
-            }
+            },
+            animation: false
         }
     });
 
