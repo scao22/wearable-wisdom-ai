@@ -43,7 +43,7 @@
     let withBoxes = true
     var i = 0
     var vals = []
-    var neutral = 0
+    let start = Date.now()
 
     function onChangeHideBoundingBoxes(e) {
       withBoxes = !$(e.target).prop('checked')
@@ -90,35 +90,47 @@
             for (var key in result){
               if (key = 'expressions'){
                 var count = 0
+                var neutral = 0
+                var happy = 0
+                var date = Date.now()-start
                 for (var expression in result[key]){
+                  // date = Date.now()-start
                   if (count==0){
                     var exp = 'neutral: ' + result[key][expression]
                     // console.log('\n\n', exp)
                     vals.push(result[key][expression])
                     //console.log(expression)
                     // console.log(result[key][expression])
-                    addData(myChart,expression,result[key][expression],0)
+                    
+                    addData(myChart,date,result[key][expression],0)
                     // chart_data_update(myChart, expression, result[key][expression])
-                    // neutral = result[key][expression]
+                    neutral = result[key][expression]
                   }
                   if (count==1){
                     var exp = 'happy: ' + result[key][expression]
-                    addData(myChart,expression,result[key][expression],1)
+                    happy = result[key][expression]
+                    addData(myChart,date,result[key][expression],1)
                     // console.log('\n\n', exp)
                   }
                   count++
+                  
                 }
                 
+                
+                
               }
+              
 
           
         }
+        // console.log(neutral)
+        // addData(myChart,date, [neutral,happy])
         }
-        getResult(result)
+        // getResult(result)
         // setTimeout(getResult(),2000)
-        // window.setInterval(function(){
-        //   getResult(result)
-        // }, 50);
+        window.setInterval(function(){
+          getResult(result)
+        }, 100);
         
         // console.log('vals', vals)
         
@@ -166,16 +178,17 @@
       var dsets = chart.data.datasets;
       var l = chart.data.labels;
       var d = dsets[index].data;
-      // chart.data.labels.push(label);
-      // chart.data.datasets.forEach((dataset) => {
-      //     dataset.data.push(data);
-      // });
+      // var n = dsets[0].data;
+      // var h = dsets[1].data;
+      
       var dLength = d.length;
-      console.log('l',l)
-      console.log('label', label)
+      // console.log('l',l)
+      // console.log('label', label)
       var didRemoveData = false
-      if (dLength > 10) {
-      d.shift();
+      if (dLength > 50) {
+        d.shift();
+      // n.shift();
+      // h.shift()
       didRemoveData = true;
     }
 
@@ -184,8 +197,10 @@
     if (didRemoveData) {
       l.shift();
     }
-    // l.push(label);
+    l.push(label);
     d.push(data);
+    // n.push(data[0]);
+    // h.push(data[1])
     chart.update();
 }
 
@@ -206,7 +221,8 @@
                 pointRadius: 1,
                 fill: false,
                 borderColor: 'rgba(245, 215, 110, 1)',
-                backgroundColor: 'rgba(245, 215, 110, 1)'
+                backgroundColor: 'rgba(245, 215, 110, 1)',
+                showLine: true
             }]
         },
         options: {
@@ -220,7 +236,8 @@
                     }
                 }]
             },
-            animation: false
+            animation: false,
+            spanGaps: true
         }
     });
 
