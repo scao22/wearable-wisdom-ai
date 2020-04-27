@@ -68,14 +68,14 @@ function renderNavBar(navbarId, exampleUri) {
       uri: 'chart',
       name: 'Chart'
     },
-    // {
-    //   uri: 'webcam_age_and_gender_recognition',
-    //   name: 'Webcam Age and Gender Recognition'
-    // },
-    // {
-    //   uri: 'bbt_face_landmark_detection',
-    //   name: 'BBT Face Landmark Detection'
-    // },
+    {
+      uri: 'speechRecognition',
+      name: 'Speech Recognition'
+    },
+    {
+      uri: 'nlp',
+      name: 'NLP'
+    },
     // {
     //   uri: 'bbt_face_similarity',
     //   name: 'BBT Face Similarity'

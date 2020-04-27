@@ -2,6 +2,26 @@ const express = require('express')
 const path = require('path')
 const { get } = require('request')
 
+// const natural = require('natural');
+
+// var classifier = new natural.BayesClassifier();
+
+// classifier.addDocument('yes', 'yes');
+// classifier.addDocument('okay, sure', 'yes');
+// classifier.addDocument('alright', 'yes');
+// classifier.addDocument('why not', 'yes');
+// classifier.addDocument('no', 'no');
+// classifier.addDocument('not really', 'no');
+// classifier.addDocument('nah', 'no');
+// classifier.addDocument('not in the mood', 'no');
+
+
+// classifier.train();
+
+
+// console.log(classifier.classify('sure why not'));
+// console.log(classifier.classify('nah I am good'));
+
 const app = express()
 
 app.use(express.json())
@@ -27,8 +47,8 @@ app.get('/', (req, res) => res.redirect('/webcam_face_expression_recognition'))
 // app.get('/webcam_face_landmark_detection', (req, res) => res.sendFile(path.join(viewsDir, 'webcamFaceLandmarkDetection.html')))
 app.get('/webcam_face_expression_recognition', (req, res) => res.sendFile(path.join(viewsDir, 'webcamFaceExpressionRecognition.html')))
 app.get('/chart', (req, res) => res.sendFile(path.join(viewsDir, 'chart.html')))
-// app.get('/webcam_age_and_gender_recognition', (req, res) => res.sendFile(path.join(viewsDir, 'webcamAgeAndGenderRecognition.html')))
-// app.get('/bbt_face_landmark_detection', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceLandmarkDetection.html')))
+app.get('/speechRecognition', (req, res) => res.sendFile(path.join(viewsDir, 'index.html')))
+app.get('/nlp', (req, res) => res.sendFile(path.join(viewsDir, 'index.html')))
 // app.get('/bbt_face_similarity', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceSimilarity.html')))
 // app.get('/bbt_face_matching', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceMatching.html')))
 // app.get('/bbt_face_recognition', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceRecognition.html')))
