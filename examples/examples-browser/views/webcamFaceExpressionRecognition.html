@@ -10,9 +10,41 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
   <script src="js/post_to_sheet.js"></script>
   <script src="js/Chart.js"></script>
+  <script  src="/js/script.js"></script>
+  <meta charset="UTF-8">
 </head>
 <body>
-  <div id="navbar"></div>
+
+  <div id="page-wrapper">
+    <h1>Web Speech Synthesis Demo</h1>
+    
+    <p id="msg"></p>
+  
+    <input type="text" name="speech-msg" id="speech-msg" x-webkit-speech>
+  
+      <div class="option">
+          <label for="voice">Voice</label>
+          <select name="voice" id="voice"></select>
+      </div>
+      <div class="option">
+          <label for="volume">Volume</label>
+          <input type="range" min="0" max="1" step="0.1" name="volume" id="volume" value="1">
+      </div>
+      <div class="option">
+          <label for="rate">Rate</label>
+          <input type="range" min="0.1" max="10" step="0.1" name="rate" id="rate" value="1">
+      </div>
+      <div class="option">
+          <label for="pitch">Pitch</label>
+          <input type="range" min="0" max="2" step="0.1" name="pitch" id="pitch" value="1">
+      </div>
+  
+      <button id="speak">Speak</button>
+  
+  </div>
+  <script  src="/js/script.js"></script>
+
+  <!-- <div id="navbar"></div> -->
   <div class="center-content page-container">
 
     <div class="progress" id="loader">
@@ -28,12 +60,21 @@
   </div>
     
 
+
+  
+
+
     <form id="post_data">
       <div style="display: none;">
         <input name="neutral_post" id="neutral" type="text" value="">
+        <input name="happy_post" id="happy" type="text" value="">
+        <input name="sad_post" id="sad" type="text" value="">
+        <input name="angry_post" id="angry" type="text" value="">
       </div>  
         <center><input type="submit" value="Yes"  onclick ="update_status()"></center>
     </form>
+
+    
     
 
   </body>
@@ -42,7 +83,10 @@
     let forwardTimes = []
     let withBoxes = true
     var i = 0
-    var vals = []
+    var neutral_vals = []
+    var happy_vals = []
+    var sad_vals = []
+    var angry_vals = []
     let start = Date.now()
 
     function onChangeHideBoundingBoxes(e) {
@@ -87,36 +131,34 @@
         
 
         function getResult(result) {
+          // console.log(result)
             for (var key in result){
               if (key = 'expressions'){
                 var count = 0
-                var neutral = 0
-                var happy = 0
                 var date = Date.now()-start
-                for (var expression in result[key]){
-                  // date = Date.now()-start
-                  if (count==0){
-                    var exp = 'neutral: ' + result[key][expression]
-                    // console.log('\n\n', exp)
-                    vals.push(result[key][expression])
-                    //console.log(expression)
-                    // console.log(result[key][expression])
-                    
-                    addData(myChart,date,result[key][expression],0)
-                    // chart_data_update(myChart, expression, result[key][expression])
-                    neutral = result[key][expression]
-                  }
-                  if (count==1){
-                    var exp = 'happy: ' + result[key][expression]
-                    happy = result[key][expression]
-                    addData(myChart,date,result[key][expression],1)
-                    // console.log('\n\n', exp)
-                  }
-                  count++
-                  
+
+                var neutral = result[key]['neutral']
+                var happy = result[key]['happy']
+                var sad = result[key]['sad']
+                var angry = result[key]['angry']
+                neutral_vals.push(neutral)
+                happy_vals.push(happy)
+                sad_vals.push(sad)
+                angry_vals.push(angry)
+                addData(myChart, date, [neutral,happy,sad,angry])
+                
+                if (neutral_vals.length>100){
+                  neutral_vals.shift()
                 }
-                
-                
+                if (happy_vals.length>100){
+                  happy_vals.shift()
+                }
+                if (sad_vals.length>100){
+                  sad_vals.shift()
+                }
+                if (angry_vals.length>100){
+                  angry_vals.shift()
+                }
                 
               }
               
@@ -126,15 +168,18 @@
         // console.log(neutral)
         // addData(myChart,date, [neutral,happy])
         }
-        // getResult(result)
+        getResult(result)
         // setTimeout(getResult(),2000)
-        window.setInterval(function(){
-          getResult(result)
-        }, 100);
+        // window.setInterval(function(){
+        //   getResult(result)
+        // }, 100);
         
         // console.log('vals', vals)
         
-        document.getElementById("neutral").value = vals;
+        // document.getElementById("neutral").value = neutral_vals;
+        // document.getElementById("happy").value = happy_vals;
+        // document.getElementById("sad").value = sad_vals;
+        // document.getElementById("angry").value = angry_vals;
         
 
       }
@@ -159,36 +204,46 @@
     }
 
     function updateResults() {}
+    function update_form(val){
+      document.getElementById(this).value = val
+    }
     function update_status()
   		{
       //document.getElementById("status").innerHTML  = "Submitting";
-      document.getElementById("neutral").value = vals;
-      console.log(document.getElementById("neutral").value)
+      // for (neutral_val in neutral_vals){
+      //   document.getElementById("neutral").value = neutral_val;
+      //   console.log(neutral_val)
+      // }
+      neutral_vals.every(update_form, 'neutral')
+      // document.getElementById("neutral").value = neutral_vals;
+      document.getElementById("happy").value = happy_vals;
+      document.getElementById("sad").value = sad_vals;
+      document.getElementById("angry").value = angry_vals;
       }
       
     
 
     $(document).ready(function() {
-      renderNavBar('#navbar', 'webcam_face_expression_recognition')
+      // renderNavBar('#navbar', 'webcam_face_expression_recognition')
       initFaceDetectionControls()
       run()
     })
 
-    function addData(chart, label, data, index) {
+    function addData(chart, label, data) {
       var dsets = chart.data.datasets;
       var l = chart.data.labels;
-      var d = dsets[index].data;
-      // var n = dsets[0].data;
-      // var h = dsets[1].data;
-      
-      var dLength = d.length;
-      // console.log('l',l)
-      // console.log('label', label)
+      var n = dsets[0].data;
+      var h = dsets[1].data;
+      var s = dsets[2].data;
+      var a = dsets[3].data;  
+      var length = n.length;
+
       var didRemoveData = false
-      if (dLength > 50) {
-        d.shift();
-      // n.shift();
-      // h.shift()
+      if (length > 50) {
+        n.shift();
+        h.shift();
+        s.shift();
+        a.shift();
       didRemoveData = true;
     }
 
@@ -198,9 +253,10 @@
       l.shift();
     }
     l.push(label);
-    d.push(data);
-    // n.push(data[0]);
-    // h.push(data[1])
+    n.push(data[0]);
+    h.push(data[1]);
+    s.push(data[2]);
+    a.push(data[3]);
     chart.update();
 }
 
@@ -222,6 +278,24 @@
                 fill: false,
                 borderColor: 'rgba(245, 215, 110, 1)',
                 backgroundColor: 'rgba(245, 215, 110, 1)',
+                showLine: true
+            },
+            {
+                label: 'sad',
+                data: [],
+                pointRadius: 1,
+                fill: false,
+                borderColor: 'rgba(173,216,230,1)',
+                backgroundColor: 'rgba(173,216,230,1)',
+                showLine: true
+            },
+            {
+                label: 'angry',
+                data: [],
+                pointRadius: 1,
+                fill: false,
+                borderColor: 'rgba(255,40,0,1)',
+                backgroundColor: 'rgba(255,40,0,1)',
                 showLine: true
             }]
         },

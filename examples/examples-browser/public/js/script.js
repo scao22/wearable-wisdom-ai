@@ -16,14 +16,18 @@ var button = document.getElementById('speak');
 
 // Get the text input element.
 var speechMsgInput = document.getElementById('speech-msg');
+console.log(speechMsgInput)
+// var speechMsgInput = 'hello';
 
 // Get the voice select element.
 var voiceSelect = document.getElementById('voice');
 
 // Get the attribute controls.
 var volumeInput = document.getElementById('volume');
+console.log(volumeInput)
 var rateInput = document.getElementById('rate');
 var pitchInput = document.getElementById('pitch');
+
 
 
 // Fetch the list of voices and populate the voice options.
@@ -61,7 +65,8 @@ function speak(text) {
 	var msg = new SpeechSynthesisUtterance();
   
   // Set the text.
-	msg.text = text;
+	// msg.text = text;
+	msg.text = 'hello how are you? Would you like to hear a joke?'
   
   // Set the attributes.
 	msg.volume = parseFloat(volumeInput.value);
@@ -81,7 +86,7 @@ function speak(text) {
 
 // Set up an event listener for when the 'speak' button is clicked.
 button.addEventListener('click', function(e) {
-	if (speechMsgInput.value.length > 0) {
+	if (speechMsgInput.value.length >= 0) {
 		speak(speechMsgInput.value);
 	}
 });
