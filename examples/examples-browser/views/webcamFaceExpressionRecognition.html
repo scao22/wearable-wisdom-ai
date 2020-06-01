@@ -11,9 +11,16 @@
   <script src="js/post_to_sheet.js"></script>
   <script src="js/Chart.js"></script>
   <script  src="/js/script.js"></script>
+  <!-- <script  src="/js/speechRecognition.js"></script> -->
   <meta charset="UTF-8">
+  <title>CodePen - Webkit Speech Recognition test</title>
+  <link rel="stylesheet" href="./style.css">
+  <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js'></script>
+  <script  src="js/speechRecognition.js"></script>
 </head>
 <body>
+  
 
   <div id="page-wrapper">
     <h1>Web Speech Synthesis Demo</h1>
@@ -58,10 +65,29 @@
       <canvas id="myChart" width="400" height="400"></canvas>
     </div>
   </div>
-    
-
+  
+  <button>START LISTENING</button>
+  <h1></h1>
 
   
+  <!-- <script  src="js/bundle.js"></script> -->
+
+
+  <!-- <script type="text/javascript">
+    var frm = $('post_data');
+    frm.submit(function (ev) {
+        $.ajax({
+            type: frm.attr('method'),
+            url: frm.attr('action'),
+            data: frm.serialize(),
+            success: function (data) {
+                alert('ok');
+            }
+        });
+
+        ev.preventDefault();
+    });
+  </script> -->
 
 
     <form id="post_data">
@@ -73,6 +99,9 @@
       </div>  
         <center><input type="submit" value="Yes"  onclick ="update_status()"></center>
     </form>
+
+    <div id='neu' value=''>
+    </div>
 
     
     
@@ -88,6 +117,11 @@
     var sad_vals = []
     var angry_vals = []
     let start = Date.now()
+    var shouldSpeak = true
+    var neutral
+    var happy 
+    var sad 
+    var angry 
 
     function onChangeHideBoundingBoxes(e) {
       withBoxes = !$(e.target).prop('checked')
@@ -137,15 +171,20 @@
                 var count = 0
                 var date = Date.now()-start
 
-                var neutral = result[key]['neutral']
-                var happy = result[key]['happy']
-                var sad = result[key]['sad']
-                var angry = result[key]['angry']
+                neutral = result[key]['neutral']
+                happy = result[key]['happy']
+                sad = result[key]['sad']
+                angry = result[key]['angry']
                 neutral_vals.push(neutral)
+                document.getElementById('neu').value = neutral
+                if (neutral<.5){
+                  // speak()
+                }
                 happy_vals.push(happy)
                 sad_vals.push(sad)
                 angry_vals.push(angry)
                 addData(myChart, date, [neutral,happy,sad,angry])
+                // document.getElementById('post_data').submit();
                 
                 if (neutral_vals.length>100){
                   neutral_vals.shift()
@@ -160,35 +199,31 @@
                   angry_vals.shift()
                 }
                 
-              }
-              
-
-          
-        }
-        // console.log(neutral)
-        // addData(myChart,date, [neutral,happy])
-        }
+              } 
+            }
+          }
         getResult(result)
-        // setTimeout(getResult(),2000)
-        // window.setInterval(function(){
-        //   getResult(result)
-        // }, 100);
-        
-        // console.log('vals', vals)
-        
-        // document.getElementById("neutral").value = neutral_vals;
-        // document.getElementById("happy").value = happy_vals;
-        // document.getElementById("sad").value = sad_vals;
-        // document.getElementById("angry").value = angry_vals;
-        
 
       }
 
       setTimeout(() => onPlay())
     }
     // chart_data_update(myChart, "neutral", neutral)
-    console.log('neutral', neutral)
-    
+    // console.log('neutral', neutral)
+    console.log('cool')
+    if (shouldSpeak){
+      window.setInterval(function(){
+        const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+        sadAvg = arrAvg(sad_vals)
+        console.log(sadAvg)
+        if (sadAvg>.3){
+          speak()
+          window.setTimeout(buttonClick(),5000)
+          shouldSpeak
+          console.log('speaking')
+        }
+      }, 5000);
+    }
 
     async function run() {
       // load face detection and face expression recognition models
@@ -214,11 +249,11 @@
       //   document.getElementById("neutral").value = neutral_val;
       //   console.log(neutral_val)
       // }
-      neutral_vals.every(update_form, 'neutral')
-      // document.getElementById("neutral").value = neutral_vals;
-      document.getElementById("happy").value = happy_vals;
-      document.getElementById("sad").value = sad_vals;
-      document.getElementById("angry").value = angry_vals;
+      // neutral_vals.every(update_form, 'neutral')
+      document.getElementById("neutral").value = neutral;
+      document.getElementById("happy").value = happy;
+      document.getElementById("sad").value = sad;
+      document.getElementById("angry").value = angry;
       }
       
     

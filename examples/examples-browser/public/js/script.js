@@ -87,6 +87,7 @@ function speak(text) {
 // Set up an event listener for when the 'speak' button is clicked.
 button.addEventListener('click', function(e) {
 	if (speechMsgInput.value.length >= 0) {
+		console.log(document.getElementById('neu').value)
 		speak(speechMsgInput.value);
 	}
 });

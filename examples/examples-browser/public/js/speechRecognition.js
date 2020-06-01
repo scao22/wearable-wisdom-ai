@@ -26,6 +26,7 @@
     }
 
     buttonClick(event) {
+      console.log('ok cool')
       return this.recog.start();
     }
 
