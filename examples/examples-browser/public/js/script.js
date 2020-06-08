@@ -69,15 +69,20 @@ function speak(text) {
 	msg.text = 'hello how are you? Would you like to hear a joke?'
   
   // Set the attributes.
-	msg.volume = parseFloat(volumeInput.value);
-	msg.rate = parseFloat(rateInput.value);
-	msg.pitch = parseFloat(pitchInput.value);
+	// msg.volume = parseFloat(volumeInput.value);
+	// msg.rate = parseFloat(rateInput.value);
+	// msg.pitch = parseFloat(pitchInput.value);
+	msg.volume = 1;
+	msg.rate = parseFloat(.9);
+	msg.pitch = 1;
+	msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == 'Google UK English Female'; })[0];
   
   // If a voice has been selected, find the voice and set the
   // utterance instance's voice attribute.
-	if (voiceSelect.value) {
-		msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == voiceSelect.value; })[0];
-	}
+	// if (voiceSelect.value) {
+	// 	console.log(voiceSelect.value)
+	// 	msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == voiceSelect.value; })[0];
+	// }
   
   // Queue this utterance.
 	window.speechSynthesis.speak(msg);
@@ -85,9 +90,17 @@ function speak(text) {
 
 
 // Set up an event listener for when the 'speak' button is clicked.
+// function speak(){
+// 	if (speechMsgInput.value.length >= 0) {
+// 		// speak('hello how are you? Would you like to hear a joke?');
+// // 		console.log(document.getElementById('neu').value)
+// 		speak(speechMsgInput.value);
+// 	}
+// }
 button.addEventListener('click', function(e) {
-	if (speechMsgInput.value.length >= 0) {
-		console.log(document.getElementById('neu').value)
-		speak(speechMsgInput.value);
-	}
+	speak('hello how are you? Would you like to hear a joke?');
+	// if (speechMsgInput.value.length >= 0) {
+	// 	// console.log(document.getElementById('neu').value)
+	// 	speak(speechMsgInput.value);
+	// }
 });

@@ -18,6 +18,7 @@
   <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> -->
   <script src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js'></script>
   <script  src="js/speechRecognition.js"></script>
+  <script src="js/textToSpeech.js"></script>
 </head>
 <body>
   
@@ -133,7 +134,34 @@
       $('#time').val(`${Math.round(avgTimeInMs)} ms`)
       $('#fps').val(`${faceapi.utils.round(1000 / avgTimeInMs)}`)
     }
-    
+
+    function speak(text) {
+        // Create a new instance of SpeechSynthesisUtterance.
+        var msg = new SpeechSynthesisUtterance();
+        
+        // Set the text.
+        // msg.text = text;
+        msg.text = 'hello how are you? Would you like to hear a joke?'
+        
+        // Set the attributes.
+        // msg.volume = parseFloat(volumeInput.value);
+        // msg.rate = parseFloat(rateInput.value);
+        // msg.pitch = parseFloat(pitchInput.value);
+        msg.volume = 1;
+        msg.rate = parseFloat(.9);
+        msg.pitch = 1;
+        msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == 'Google UK English Female'; })[0];
+        
+        // If a voice has been selected, find the voice and set the
+        // utterance instance's voice attribute.
+        // if (voiceSelect.value) {
+        // 	console.log(voiceSelect.value)
+        // 	msg.voice = speechSynthesis.getVoices().filter(function(voice) { return voice.name == voiceSelect.value; })[0];
+        // }
+        
+        // Queue this utterance.
+        window.speechSynthesis.speak(msg);
+}
 
     async function onPlay() {
       const videoEl = $('#inputVideo').get(0)
@@ -208,6 +236,26 @@
 
       setTimeout(() => onPlay())
     }
+
+    var addEvent = document.addEventListener ? function(target,type,action){
+        if(target){
+            target.addEventListener(type,action,false);
+        }
+    } : function(target,type,action){
+        if(target){
+            target.attachEvent('on' + type,action,false);
+        }
+    }
+
+    addEvent(document,'keydown',function(e){
+              e = e || window.event;
+              var key = e.which || e.keyCode;
+              if(key===122){
+                  console.log('yay')
+              }
+          });
+
+
     // chart_data_update(myChart, "neutral", neutral)
     // console.log('neutral', neutral)
     console.log('cool')
@@ -217,10 +265,11 @@
         sadAvg = arrAvg(sad_vals)
         console.log(sadAvg)
         if (sadAvg>.3){
-          speak()
-          window.setTimeout(buttonClick(),5000)
+          speak('text')
+          // window.setTimeout(buttonClick(),5000)
           shouldSpeak
           console.log('speaking')
+          
         }
       }, 5000);
     }
