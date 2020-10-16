@@ -46,9 +46,9 @@ app.get('/', (req, res) => res.redirect('/webcam_face_expression_recognition'))
 // app.get('/webcam_face_detection', (req, res) => res.sendFile(path.join(viewsDir, 'webcamFaceDetection.html')))
 // app.get('/webcam_face_landmark_detection', (req, res) => res.sendFile(path.join(viewsDir, 'webcamFaceLandmarkDetection.html')))
 app.get('/webcam_face_expression_recognition', (req, res) => res.sendFile(path.join(viewsDir, 'webcamFaceExpressionRecognition.html')))
-app.get('/chart', (req, res) => res.sendFile(path.join(viewsDir, 'chart.html')))
-app.get('/speechRecognition', (req, res) => res.sendFile(path.join(viewsDir, 'index.html')))
-app.get('/nlp', (req, res) => res.sendFile(path.join(viewsDir, 'index.html')))
+// app.get('/chart', (req, res) => res.sendFile(path.join(viewsDir, 'chart.html')))
+// app.get('/speechRecognition', (req, res) => res.sendFile(path.join(viewsDir, 'index.html')))
+// app.get('/nlp', (req, res) => res.sendFile(path.join(viewsDir, 'index.html')))
 // app.get('/bbt_face_similarity', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceSimilarity.html')))
 // app.get('/bbt_face_matching', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceMatching.html')))
 // app.get('/bbt_face_recognition', (req, res) => res.sendFile(path.join(viewsDir, 'bbtFaceRecognition.html')))
@@ -69,7 +69,7 @@ app.post('/fetch_external_image', async (req, res) => {
   }
 })
 
-app.listen(3000, () => console.log('Listening on port 3000!'))
+app.listen(process.env.port || 3000, () => console.log('Listening on port 3000!'))
 
 function request(url, returnBuffer = true, timeout = 10000) {
   return new Promise(function(resolve, reject) {
